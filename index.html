@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-TRM3DZH7H9"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-TRM3DZH7H9');
+	</script>
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+	<meta name="description" content="Random Number Incremental. A short incremental game about generating random numbers.">
+	<meta name="keywords" content="HTML, CSS, JavaScript, 98.css, Incremental">
+	<meta name="author" content="snaber">
+
+	<link rel="stylesheet" href="https://unpkg.com/98.css" />
+	<link rel="stylesheet" type="text/css" href="css/styles.css" />
+
+	<title>randNumInc.exe</title>
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+</head>
+<body>
+	<div class="titleContainer">
+		<img src="img/dice.png" alt="Dice Icon">
+		<h1>randNumInc.exe</h1>
+	</div>
+
+	<!-- End Screen -->
+	<div class="window" id="endScreen" hidden>
+		<div class="title-bar">
+			<div class="title-bar-text">Error</div>
+		</div>
+		<div class="window-body">
+			<p>Oops! We ran out of numbers. (That means you completed the game.)</p>
+			<p>Thanks for playing!</p>
+			<p>Your time: <span id="finalTime"></span></p>
+		</div>
+	</div>
+
+	<!-- Game -->
+	<div id="game">
+		<!-- Stats -->
+		<div class="window">
+			<div class="title-bar">
+				<div class="title-bar-text">Stats</div>
+			</div>
+			<div class="window-body">
+				<div>Numbers: <span id="numbers"></span> (<span id="numbersPerSec">0</span>/s)</div>
+				<div id="unlockPrimeNumbers" class="primeColor" hidden>Prime Numbers: <span id="primeNumbers"></span> (<span id="primeNumbersPerSec">0</span>/s)</div>
+				<div id="unlockTenNumbers" class="tenColor" hidden>10^x Numbers: <span id="tenNumbers"></span> (<span id="tenNumbersPerSec">0</span>/s)</div>
+			</div>
+
+			<div class="status-bar">
+				<p class="status-bar-field">Total Numbers: <span id="totalNumbers"></span></p>
+				<p class="status-bar-field">Numbers Left: <span id="numbersLeft"></span></p>
+				<p class="status-bar-field">Total Time: <span id="totalTime"></span></p>
+			</div>
+		</div>
+
+		<!-- Unlocks -->
+		<div class="window" id="unlockUnlocks">
+			<div class="title-bar">
+				<div class="title-bar-text">Unlocks</div>
+			</div>
+			<div class="window-body">
+				<button id="unlockPrimeNumbersBtn">Unlock Prime Numbers (Cost: <span id="unlockPrimeNumbersCost"></span> Numbers)</button>
+				<button id="unlockTenNumbersBtn">Unlock 10^x Numbers (Cost: <span class="primeColor"><span id="unlockTenNumbersCost"></span> Prime Numbers</span>)</button>
+				<button id="unlockAutoclickersBtn">Unlock Autoclickers (Cost: <span id="unlockAutoclickersCost"></span> Numbers)</button>
+				<button id="unlockSuperAutoclickersBtn">Unlock Super Autoclickers (Cost: <span class="primeColor"><span id="unlockSuperAutoclickersCost"></span> Prime Numbers</span>)</button>
+				<div id="noUnlocksVisible" hidden>Keep progressing!</div>
+				<div id="unlockedEverything" hidden>Everything unlocked!</div>
+			</div>
+		</div>
+		
+		<!-- Manual Clicks -->
+		<div class="window">
+			<div class="title-bar">
+				<div class="title-bar-text">Manual Clicks</div>
+			</div>
+			<div class="window-body">
+				<button id="clickBtn">Get a Number</button><br/>
+				<br/>
+				<p>Possible range: <span id="clickMin"></span> - <span id="clickMax"></span></p>
+				<fieldset>
+					<legend>Last results</legend>
+					<div class="field-row">
+						<span id="clickResults"></span>
+					</div>
+				</fieldset>
+				<br/>
+				<button id="clickMinBtn">Increase Min (Cost: <span id="clickMinCost"></span> Numbers)</button>
+				<button id="clickMaxBtn">Increase Max (Cost: <span id="clickMaxCost"></span> Numbers)</button>
+			</div>
+		</div>
+
+		<!-- Autoclickers -->
+		<div class="window" id="unlockAutoclickers" hidden>
+			<div class="title-bar">
+				<div class="title-bar-text">Autoclickers</div>
+			</div>
+			<div class="window-body">
+				<p>Autoclickers: <span id="autoclickers"></span></p>
+				<button id="autoclickerBuyBtn">Buy an Autoclicker (Cost: <span class="primeColor"><span id="autoclickerCost"></span> Prime Numbers</span>)</button>
+				<br/><br/>
+				<div id="boughtAutoclicker" hidden>
+					<p>Possible range: <span id="autoclickerMin"></span> - <span id="autoclickerMax"></span></p>
+					<fieldset>
+						<legend>Last results</legend>
+						<div class="field-row">
+							<span id="autoclickerResults"></span>
+						</div>
+					</fieldset>
+					<br/>
+					<button id="autoclickerMinBtn">Increase Min (Cost: <span id="autoclickerMinCost"></span> Numbers)</button>
+					<button id="autoclickerMaxBtn">Increase Max (Cost: <span id="autoclickerMaxCost"></span> Numbers)</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Super Autoclickers -->
+		<div class="window" id="unlockSuperAutoclickers" hidden>
+			<div class="title-bar">
+				<div class="title-bar-text">Super Autoclickers</div>
+			</div>
+			<div class="window-body">
+				<p>Super Autoclickers: <span id="superAutoclickers"></span></p>
+				<button id="superAutoclickerBuyBtn">Buy a Super Autoclicker (Cost: <span class="tenColor"><span id="superAutoclickerCost"></span> 10^x Numbers)</span></button>
+				<br/><br/>
+				<div id="boughtSuperAutoclicker" hidden>
+					<p>Possible range: <span id="superAutoclickerMin"></span> - <span id="superAutoclickerMax"></span></p>
+					<fieldset>
+						<legend>Last results</legend>
+						<div class="field-row">
+							<span id="superAutoclickerResults"></span>
+						</div>
+					</fieldset>
+					<br/>
+					<button id="superAutoclickerMinBtn">Increase Min (Cost: <span class="primeColor"><span id="superAutoclickerMinCost"></span> Prime Numbers</span>)</button>
+					<button id="superAutoclickerMaxBtn">Increase Max (Cost: <span class="primeColor"><span id="superAutoclickerMaxCost"></span> Prime Numbers</span>)</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Save File -->
+	<div class="window">
+		<div class="title-bar">
+			<div class="title-bar-text">Save File</div>
+		</div>
+		<div class="window-body">
+			<p>Game auto-saves every 30 seconds.</p>
+			<button id="saveGameBtn">Save Game</button>
+			<button id="loadGameBtn">Load Game</button>
+			<button id="deleteSaveBtn">Delete Save</button>
+		</div>
+		<div class="status-bar">
+			<p class="status-bar-field">randNumInc.exe by <a href="https://www.github.com/snab43" target="_blank">snaber</a></p>
+			<p class="status-bar-field">v1.0.4</p>
+			<p class="status-bar-field">Copyright &copy; <span id="year"></span></p>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="js/main.js"></script>
+	<script>
+		document.getElementById('year').innerText = new Date().getFullYear();
+	</script>
+</body>
+</html>
